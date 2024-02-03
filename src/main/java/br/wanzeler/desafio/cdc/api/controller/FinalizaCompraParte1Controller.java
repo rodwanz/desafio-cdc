@@ -2,6 +2,7 @@ package br.wanzeler.desafio.cdc.api.controller;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,10 @@ public class FinalizaCompraParte1Controller {
 	}
 
 	@PostMapping(value = "/compras")
+	@Transactional
 	public String cria(@RequestBody @Valid NovaCompraRequest request) {
 		Compra novaCompra = request.naFormaDaCompra(manager);
+		manager.persist(novaCompra);
 		return novaCompra.toString();
 	}
 

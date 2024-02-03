@@ -127,9 +127,7 @@ public class Livro {
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
-	
-	
-	
+		
 	@Override
 	public String toString() {
 		return "Livro [id=" + id + ", titulo = " + titulo + ", resumo=" + resumo + ", sumario = " + sumario + ", preco = "

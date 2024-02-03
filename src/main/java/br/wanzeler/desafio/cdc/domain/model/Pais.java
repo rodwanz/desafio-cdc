@@ -24,10 +24,10 @@ public class Pais {
 		super();
 		this.nome = nome;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "Pais [id = " + id + ", nome = " + nome + "]";
+		return "Pais [id=" + id + ", nome=" + nome + "]";
 	}
 
 	@Override

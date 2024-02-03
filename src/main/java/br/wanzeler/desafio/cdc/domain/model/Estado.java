@@ -28,6 +28,11 @@ public class Estado {
 		this.nome = nome;
 		this.pais = pais;
 	}
+	
+	@Override
+	public String toString() {
+		return "Estado [id=" + id + ", nome=" + nome + ", pais=" + pais + "]";
+	}
 
 	public Long getId() {
 		return id;
@@ -47,11 +52,6 @@ public class Estado {
 
 	public void setPais(@NotNull @Valid  Pais pais) {
 		this.pais = pais;
-	}
-
-	@Override
-	public String toString() {
-		return "Estado [id = " + id + ", nome = " + nome + ", pais = " + pais + "]";
 	}
 
 	public boolean pertenceAPais(Pais pais) {

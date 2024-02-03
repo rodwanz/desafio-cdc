@@ -1,8 +1,10 @@
 package br.wanzeler.desafio.cdc.api.dto;
 
+import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import br.wanzeler.desafio.cdc.domain.model.ItemPedido;
 import br.wanzeler.desafio.cdc.domain.model.Livro;
 import br.wanzeler.desafio.cdc.valido.ExistsId;
 
@@ -23,10 +25,9 @@ public class NovoPedidoItemRequest {
 	public Long getIdLivro() {
 		return idLivro;
 	}
-	
-	@Override
-	public String toString() {
-		return "NovoPedidoItemRequest [idLivro = " + idLivro + ", "
-				+ "quantidade = " + quantidade + "]";
+
+	public ItemPedido naFormaDoItem(EntityManager manager) {
+		@NotNull Livro livro = manager.find(Livro.class, idLivro);
+		return new ItemPedido(livro, quantidade);
 	}	
 }

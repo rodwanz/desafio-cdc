@@ -1,5 +1,7 @@
 package br.wanzeler.desafio.cdc.api.dto;
 
+import java.util.function.Function;
+
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -8,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import br.wanzeler.desafio.cdc.domain.model.Compra;
 import br.wanzeler.desafio.cdc.domain.model.Estado;
 import br.wanzeler.desafio.cdc.domain.model.Pais;
+import br.wanzeler.desafio.cdc.domain.model.Pedido;
 import br.wanzeler.desafio.cdc.valido.Documento;
 import br.wanzeler.desafio.cdc.valido.ExistsId;
 
@@ -67,14 +70,6 @@ public class NovaCompraRequest {
 	public String getDocumento() {
 		return documento;
 	}
-	
-	@Override
-	public String toString() {
-		return "NovaCompraRequest [email = " + email + ", nome = " + nome + ", sobrenome = " + sobrenome + ", documento = "
-				+ documento + ", endereco = " + endereco + ", complemento = " + complemento + ", cidade = " + cidade
-				+ ", idPais = " + idPais + ", idEstado = " + idEstado + ", telefone = " + telefone + ", cep = " + cep
-				+ ", pedido = " + pedido + "]";
-	}
 
 	public Long getIdPais() {
 		return idPais;
@@ -86,10 +81,13 @@ public class NovaCompraRequest {
 	
 	public Compra naFormaDaCompra(EntityManager manager) {
 		@NotNull Pais pais = manager.find(Pais.class, idPais);
-		Compra compra = new Compra(email, nome, documento, endereco, complemento, cidade, pais, telefone, cep);
+		Function<Compra, Pedido> funcaoCriacaoPedido = pedido.naFormaDaCompra(manager);
+		Compra compra = new Compra(email, nome, documento, endereco, 
+				complemento, cidade, pais, telefone, cep, funcaoCriacaoPedido);
 		if(idEstado!=null) {
 			compra.setEstado(manager.find(Estado.class, idEstado));
 		}
+
 		return compra; 
 	}
 

@@ -28,12 +28,12 @@ public class Autor {
 		this.email = email;
 		this.descricao = descricao;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "Autor [nome = " + nome + ", email = " + email + ", descricao = " + descricao + "]";
+		return "Autor [id=" + id + ", nome=" + nome + ", email=" + email + ", descricao=" + descricao + "]";
 	}
-	
+
 	public String getNome() {
 		return this.nome;
 	}
