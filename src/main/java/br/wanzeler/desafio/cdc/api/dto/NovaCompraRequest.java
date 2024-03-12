@@ -1,5 +1,6 @@
 package br.wanzeler.desafio.cdc.api.dto;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import javax.persistence.EntityManager;
@@ -7,10 +8,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.util.StringUtils;
+
 import br.wanzeler.desafio.cdc.domain.model.Compra;
+import br.wanzeler.desafio.cdc.domain.model.Cupom;
 import br.wanzeler.desafio.cdc.domain.model.Estado;
 import br.wanzeler.desafio.cdc.domain.model.Pais;
 import br.wanzeler.desafio.cdc.domain.model.Pedido;
+import br.wanzeler.desafio.cdc.domain.repositories.CupomRepository;
 import br.wanzeler.desafio.cdc.valido.Documento;
 import br.wanzeler.desafio.cdc.valido.ExistsId;
 
@@ -43,6 +48,8 @@ public class NovaCompraRequest {
 	@Valid
 	@NotNull
 	private NovoPedidoRequest pedido;
+	//@ExistsId(domainClass = Cupom.class,fieldName = "codigo")
+	private String codigoCupom;
 	
 	public NovaCompraRequest(@NotBlank String email, @NotBlank String nome, @NotBlank String sobrenome,
 			@NotBlank String documento, @NotBlank String endereco, @NotBlank String complemento,
@@ -63,6 +70,10 @@ public class NovaCompraRequest {
 		this.pedido = pedido;
 	}
 	
+	public void setCupom(String codigoCupom) {
+		 this.codigoCupom = codigoCupom;
+	}
+	
 	public NovoPedidoRequest getPedido() {
 		return pedido;
 	}
@@ -79,7 +90,7 @@ public class NovaCompraRequest {
 		return idEstado;
 	}
 	
-	public Compra naFormaDaCompra(EntityManager manager) {
+	public Compra naFormaDaCompra(EntityManager manager, CupomRepository cupomRepository) {
 		@NotNull Pais pais = manager.find(Pais.class, idPais);
 		Function<Compra, Pedido> funcaoCriacaoPedido = pedido.naFormaDaCompra(manager);
 		Compra compra = new Compra(email, nome, documento, endereco, 
@@ -87,11 +98,19 @@ public class NovaCompraRequest {
 		if(idEstado!=null) {
 			compra.setEstado(manager.find(Estado.class, idEstado));
 		}
-
+		if(StringUtils.hasText(codigoCupom)) {
+			Cupom cupom = cupomRepository.getByCodigo(codigoCupom);
+			compra.aplicaCupom(cupom);
+		}
+		
 		return compra; 
 	}
 
 	public boolean temEstado() {
 		return idEstado != null;
+	}
+
+	public Optional<String> getCodigoCupom() {
+		return Optional.ofNullable(codigoCupom);
 	}
 }

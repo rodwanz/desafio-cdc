@@ -9,20 +9,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.wanzeler.desafio.cdc.api.dto.LivroForma;
-import br.wanzeler.desafio.cdc.domain.model.Livro;
+import br.wanzeler.desafio.cdc.api.dto.NovoCupomRequest;
+import br.wanzeler.desafio.cdc.domain.model.Cupom;
 
 @RestController
-public class LivroController {
-
+public class NovoCupomController {
+	
 	@PersistenceContext
-	private EntityManager manager;
-
-	@PostMapping(value = "/livros")
+	private EntityManager gerente;
+	
+	@PostMapping(value = "/cupons")
 	@Transactional
-	public String criaLivro(@RequestBody @Valid LivroForma formandoLivro) {
-		Livro novoLivro = formandoLivro.modeloDeAcordoLivro(manager);
-		manager.persist(novoLivro);
-		return novoLivro.toString();
+	public String cria(@RequestBody @Valid NovoCupomRequest solicitando) {
+		Cupom novoCuupom = solicitando.naFormaDoCpom(gerente);
+		gerente.persist(novoCuupom);
+		return novoCuupom.toString();
 	}
+
 }

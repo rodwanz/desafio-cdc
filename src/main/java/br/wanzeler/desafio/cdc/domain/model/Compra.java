@@ -3,6 +3,7 @@ package br.wanzeler.desafio.cdc.domain.model;
 import java.util.function.Function;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,6 +37,8 @@ public class Compra {
 	private Estado estado;
 	@OneToOne(mappedBy = "compra", cascade = CascadeType.PERSIST)
 	private Pedido pedido;
+	@Embedded
+	private CupomAplicado cupomAplicado;
 	
 	public Compra(@NotBlank @Email String email, @NotBlank String nome, @NotBlank String sobrenome,
 			@NotBlank String documento, @NotBlank String endereco, @NotBlank String complemento, @NotNull Pais pais,
@@ -57,12 +60,19 @@ public class Compra {
 	public String toString() {
 		return "Compra [id=" + id + ", email=" + email + ", nome=" + nome + ", sobrenome=" + sobrenome + ", documento="
 				+ documento + ", endereco=" + endereco + ", complemento=" + complemento + ", pais=" + pais
-				+ ", telefone=" + telefone + ", cep=" + cep + ", estado=" + estado + ", pedido=" + pedido + "]";
+				+ ", telefone=" + telefone + ", cep=" + cep + ", estado=" + estado + ", pedido=" + pedido
+				+ ", cupomAplicado=" + cupomAplicado + "]";
 	}
 
 	public void setEstado(@NotNull @Valid Estado estado) {
 		Assert.notNull(pais, "Não associar um estado enquanto o país for nulo");
 		Assert.isTrue(estado.pertenceAPais(pais), "Este estado não pertence ao país associado");
 		this.estado = estado;
+	}
+	
+	public void aplicaCupom(Cupom cupom) {
+		Assert.isTrue(cupom.valido(), "O cupom que está sendo aplicado não está mais válido");
+		Assert.isNull(cupomAplicado,"Você não pode trocar um cupom de uma compra");
+		this.cupomAplicado = new CupomAplicado (cupom);
 	}
 }
